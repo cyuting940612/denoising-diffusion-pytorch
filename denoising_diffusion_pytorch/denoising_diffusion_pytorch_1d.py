@@ -5,6 +5,7 @@ from functools import partial
 from collections import namedtuple
 from multiprocessing import cpu_count
 
+import numpy as np
 import torch
 from torch import nn, einsum, Tensor
 import torch.nn.functional as F
@@ -21,6 +22,10 @@ from ema_pytorch import EMA
 from tqdm.auto import tqdm
 
 from denoising_diffusion_pytorch.version import __version__
+
+import DataProcess as dp
+
+import matplotlib.pyplot as plt
 
 # constants
 
@@ -93,12 +98,12 @@ class Residual(nn.Module):
 
 def Upsample(dim, dim_out = None):
     return nn.Sequential(
-        nn.Upsample(scale_factor = 2, mode = 'nearest'),
-        nn.Conv1d(dim, default(dim_out, dim), 3, padding = 1)
+        nn.Upsample(scale_factor = 1, mode = 'nearest'),
+        nn.Conv1d(dim, default(dim_out, dim), 3, stride=1, padding = 0)
     )
 
 def Downsample(dim, dim_out = None):
-    return nn.Conv1d(dim, default(dim_out, dim), 4, 2, 1)
+    return nn.Conv1d(dim, default(dim_out, dim), 3, 1, 1)
 
 class RMSNorm(nn.Module):
     def __init__(self, dim):
@@ -157,11 +162,13 @@ class RandomOrLearnedSinusoidalPosEmb(nn.Module):
 class Block(nn.Module):
     def __init__(self, dim, dim_out, groups = 8):
         super().__init__()
-        self.proj = nn.Conv1d(dim, dim_out, 3, padding = 1)
+        self.proj = nn.Conv1d(dim, dim_out, 3, padding = 0)
         self.norm = nn.GroupNorm(groups, dim_out)
+        # self.norm = nn.BatchNorm1d(groups, dim_out)
         self.act = nn.SiLU()
 
     def forward(self, x, scale_shift = None):
+        x = torch.nn.functional.pad(x, (1, 1), "replicate", value=0)
         x = self.proj(x)
         x = self.norm(x)
 
@@ -192,9 +199,12 @@ class ResnetBlock(nn.Module):
             time_emb = rearrange(time_emb, 'b c -> b c 1')
             scale_shift = time_emb.chunk(2, dim = 1)
 
+        # x = torch.nn.functional.pad(x, (1,1), "replicate",value=0)
         h = self.block1(x, scale_shift = scale_shift)
 
+        # h = torch.nn.functional.pad(h, (1,1), "replicate",value=0)
         h = self.block2(h)
+        # x = self.block2(x)
 
         return h + self.res_conv(x)
 
@@ -219,7 +229,7 @@ class LinearAttention(nn.Module):
         q = q.softmax(dim = -2)
         k = k.softmax(dim = -1)
 
-        q = q * self.scale        
+        q = q * self.scale
 
         context = torch.einsum('b h d n, b h e n -> b h d e', k, v)
 
@@ -262,7 +272,7 @@ class Unet1D(nn.Module):
         dim_mults=(1, 2, 4, 8),
         channels = 3,
         self_condition = False,
-        resnet_block_groups = 8,
+        resnet_block_groups = 4,
         learned_variance = False,
         learned_sinusoidal_cond = False,
         random_fourier_features = False,
@@ -274,13 +284,13 @@ class Unet1D(nn.Module):
         super().__init__()
 
         # determine dimensions
-
+        self.p1d = (0.5, 0.5)
         self.channels = channels
         self.self_condition = self_condition
         input_channels = channels * (2 if self_condition else 1)
 
         init_dim = default(init_dim, dim)
-        self.init_conv = nn.Conv1d(input_channels, init_dim, 7, padding = 3)
+        self.init_conv = nn.Conv1d(input_channels, init_dim, 3, padding = 0)
 
         dims = [init_dim, *map(lambda m: dim * m, dim_mults)]
         in_out = list(zip(dims[:-1], dims[1:]))
@@ -320,7 +330,7 @@ class Unet1D(nn.Module):
                 block_klass(dim_in, dim_in, time_emb_dim = time_dim),
                 block_klass(dim_in, dim_in, time_emb_dim = time_dim),
                 Residual(PreNorm(dim_in, LinearAttention(dim_in))),
-                Downsample(dim_in, dim_out) if not is_last else nn.Conv1d(dim_in, dim_out, 3, padding = 1)
+                Downsample(dim_in, dim_out) if not is_last else nn.Conv1d(dim_in, dim_out, 3, padding = 0)
             ]))
 
         mid_dim = dims[-1]
@@ -335,7 +345,7 @@ class Unet1D(nn.Module):
                 block_klass(dim_out + dim_in, dim_out, time_emb_dim = time_dim),
                 block_klass(dim_out + dim_in, dim_out, time_emb_dim = time_dim),
                 Residual(PreNorm(dim_out, LinearAttention(dim_out))),
-                Upsample(dim_out, dim_in) if not is_last else  nn.Conv1d(dim_out, dim_in, 3, padding = 1)
+                Upsample(dim_out, dim_in) if not is_last else  nn.Conv1d(dim_out, dim_in, 3, padding = 0)
             ]))
 
         default_out_dim = channels * (1 if not learned_variance else 2)
@@ -349,13 +359,13 @@ class Unet1D(nn.Module):
             x_self_cond = default(x_self_cond, lambda: torch.zeros_like(x))
             x = torch.cat((x_self_cond, x), dim = 1)
 
+        x = torch.nn.functional.pad(x, (1,1), "replicate",value=0)
         x = self.init_conv(x)
         r = x.clone()
 
         t = self.time_mlp(time)
 
         h = []
-
         for block1, block2, attn, downsample in self.downs:
             x = block1(x, t)
             h.append(x)
@@ -364,8 +374,10 @@ class Unet1D(nn.Module):
             x = attn(x)
             h.append(x)
 
+            # x = torch.nn.functional.pad(x, (1, 1), "replicate", value=0)
             x = downsample(x)
 
+        x = torch.nn.functional.pad(x, (1,1), "replicate",value=0)
         x = self.mid_block1(x, t)
         x = self.mid_attn(x)
         x = self.mid_block2(x, t)
@@ -375,15 +387,18 @@ class Unet1D(nn.Module):
             x = block1(x, t)
 
             x = torch.cat((x, h.pop()), dim = 1)
+            # x = torch.nn.functional.pad(x, (1, 1), "replicate", value=0)
             x = block2(x, t)
             x = attn(x)
 
+            x = torch.nn.functional.pad(x, (1, 1), "replicate", value=0)
             x = upsample(x)
 
         x = torch.cat((x, r), dim = 1)
 
         x = self.final_res_block(x, t)
-        return self.final_conv(x)
+        x = self.final_conv(x)
+        return x
 
 # gaussian diffusion trainer class
 
@@ -418,7 +433,7 @@ class GaussianDiffusion1D(nn.Module):
         seq_length,
         timesteps = 1000,
         sampling_timesteps = None,
-        objective = 'pred_noise',
+        objective = 'pred_x0',
         beta_schedule = 'cosine',
         ddim_sampling_eta = 0.,
         auto_normalize = True
@@ -584,10 +599,10 @@ class GaussianDiffusion1D(nn.Module):
     @torch.no_grad()
     def p_sample_loop(self, shape):
         batch, device = shape[0], self.betas.device
-
+        # img = cond
         img = torch.randn(shape, device=device)
 
-        x_start = None
+        # x_start = cond
 
         for t in tqdm(reversed(range(0, self.num_timesteps)), desc = 'sampling loop time step', total = self.num_timesteps):
             self_cond = x_start if self.self_condition else None
@@ -683,7 +698,7 @@ class GaussianDiffusion1D(nn.Module):
         if self.self_condition and random() < 0.5:
             with torch.no_grad():
                 x_self_cond = self.model_predictions(x, t).pred_x_start
-                x_self_cond.detach_()
+                x_self_cond.detach()
 
         # predict and take gradient step
 
@@ -764,7 +779,7 @@ class Trainer1D(object):
 
         # dataset and dataloader
 
-        dl = DataLoader(dataset, batch_size = train_batch_size, shuffle = True, pin_memory = True, num_workers = cpu_count())
+        dl = DataLoader(dataset, batch_size = train_batch_size, shuffle = True, pin_memory = True)
 
         dl = self.accelerator.prepare(dl)
         self.dl = cycle(dl)
@@ -832,6 +847,10 @@ class Trainer1D(object):
     def train(self):
         accelerator = self.accelerator
         device = accelerator.device
+        initial_sample_origin,_,_ = dp.data_process()
+        # initial_sample_single = torch.tensor(initial_sample_origin[0,:,:]).reshape(-1)
+        # initial_sample_single = initial_sample_single.reshape(1,3,96)
+        mse_arr = np.zeros((self.train_num_steps+1))
 
         with tqdm(initial = self.step, total = self.train_num_steps, disable = not accelerator.is_main_process) as pbar:
 
@@ -860,22 +879,36 @@ class Trainer1D(object):
                 accelerator.wait_for_everyone()
 
                 self.step += 1
-                if accelerator.is_main_process:
-                    self.ema.update()
-
-                    if self.step != 0 and self.step % self.save_and_sample_every == 0:
-                        self.ema.ema_model.eval()
-
-                        with torch.no_grad():
-                            milestone = self.step // self.save_and_sample_every
-                            batches = num_to_groups(self.num_samples, self.batch_size)
-                            all_samples_list = list(map(lambda n: self.ema.ema_model.sample(batch_size=n), batches))
-
-                        all_samples = torch.cat(all_samples_list, dim = 0)
-
-                        torch.save(all_samples, str(self.results_folder / f'sample-{milestone}.png'))
-                        self.save(milestone)
+                # if accelerator.is_main_process:
+                #     self.ema.update()
+                #
+                #     if self.step != 0:
+                #         self.ema.ema_model.eval()
+                #
+                #         with torch.no_grad():
+                #             synthetic_sample = self.ema.ema_model.sample(batch_size=1, cond=initial_sample_single)
+                #             mse = ((synthetic_sample - initial_sample_single) ** 2).mean()
+                #             mse_arr[self.step] = mse
+                # if accelerator.is_main_process:
+                #     self.ema.update()
+                #
+                #     if self.step != 0 and self.step % self.save_and_sample_every == 0:
+                #         self.ema.ema_model.eval()
+                #
+                #         with torch.no_grad():
+                #             milestone = self.step // self.save_and_sample_every
+                #             batches = num_to_groups(self.num_samples, self.batch_size)
+                #             all_samples_list = list(map(lambda n: self.ema.ema_model.sample(batch_size=n), batches))
+                #
+                #         all_samples = torch.cat(all_samples_list, dim = 0)
+                #
+                #         torch.save(all_samples, str(self.results_folder / f'sample-{milestone}.png'))
+                #         self.save(milestone)
 
                 pbar.update(1)
+
+        # time_points = np.arange(self.train_num_steps+1)
+        # plt.plot(time_points,mse_arr)
+        # plt.show()
 
         accelerator.print('training complete')
