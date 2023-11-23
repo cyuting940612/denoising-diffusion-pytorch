@@ -8,20 +8,25 @@ import DataProcess_Classifier as dpc
 import tensorflow as tf
 from tensorflow import keras
 import Classifier
+import Encoder
 
-df_all,_,_ = dpc.DataProcess_Classifier()
+df_all = dpc.DataProcess_Classifier()
 
-X = np.zeros((365,3,96))
-y = np.zeros((365))
-for i in range(365):
-    for j in range(96):
-        X[i,0,j] = df_all[i*96+j,0]
-        X[i, 1, j] = df_all[i * 96 + j,1]
-        X[i, 2, j] = df_all[i * 96 + j,2]
-        y[i] = df_all[i*96,3]
-
+# X = np.zeros((365,3,96))
+# y = np.zeros((365))
+# for i in range(365):
+#     for j in range(96):
+#         X[i,0,j] = df_all[i*96+j,0]
+#         X[i, 1, j] = df_all[i * 96 + j,1]
+#         X[i, 2, j] = df_all[i * 96 + j,2]
+#         y[i] = df_all[i*96,3]
+X = df_all[:,0:3,:]
+y = df_all[:,3,0]
 # X = np.random.randn(100, 3, 96)  # 100 data points with 3 channels and 96 time steps
 # y = np.random.randint(0, 2, 100)  # Binary classification (0 or 1)
+X = np.transpose(X,(0,2,1))
+X = Encoder.encoder(X)
+X = np.transpose(X,(0,2,1))
 
 # Convert data to PyTorch tensors
 X_tensor = torch.tensor(X, dtype=torch.float32)

@@ -580,6 +580,7 @@ class GaussianDiffusion1D(nn.Module):
     def p_mean_variance(self, x, t, x_self_cond = None, clip_denoised = True):
         preds = self.model_predictions(x, t, x_self_cond)
         x_start = preds.pred_x_start
+        # x_start = x_self_cond
 
         if clip_denoised:
             x_start.clamp_(-1., 1.)
@@ -597,12 +598,12 @@ class GaussianDiffusion1D(nn.Module):
         return pred_img, x_start
 
     @torch.no_grad()
-    def p_sample_loop(self, shape):
+    def p_sample_loop(self, shape, cond):
         batch, device = shape[0], self.betas.device
         # img = cond
         img = torch.randn(shape, device=device)
 
-        # x_start = cond
+        x_start = cond
 
         for t in tqdm(reversed(range(0, self.num_timesteps)), desc = 'sampling loop time step', total = self.num_timesteps):
             self_cond = x_start if self.self_condition else None
@@ -648,10 +649,10 @@ class GaussianDiffusion1D(nn.Module):
         return img
 
     @torch.no_grad()
-    def sample(self, batch_size = 16):
+    def sample(self, batch_size = 16,cond=None):
         seq_length, channels = self.seq_length, self.channels
         sample_fn = self.p_sample_loop if not self.is_ddim_sampling else self.ddim_sample
-        return sample_fn((batch_size, channels, seq_length))
+        return sample_fn((batch_size, channels, seq_length),cond=cond)
 
     @torch.no_grad()
     def interpolate(self, x1, x2, t = None, lam = 0.5):
@@ -728,6 +729,8 @@ class GaussianDiffusion1D(nn.Module):
         img = self.normalize(img)
         return self.p_losses(img, t, *args, **kwargs)
 
+
+
 # trainer class
 
 class Trainer1D(object):
@@ -757,7 +760,8 @@ class Trainer1D(object):
 
         self.accelerator = Accelerator(
             split_batches = split_batches,
-            mixed_precision = mixed_precision_type if amp else 'no'
+            mixed_precision = mixed_precision_type if amp else 'no',
+            cpu = True
         )
 
         # model

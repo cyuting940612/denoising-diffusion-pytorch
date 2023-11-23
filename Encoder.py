@@ -25,7 +25,7 @@ def decoder(input_seq):
     # Extract the encoder and decoder
     encoder = Model(inputs=loaded_autoencoder.input,
                     outputs=loaded_autoencoder.layers[4].output)  # Assuming Conv1D layer is at index 1
-    decoder_input = Input(shape=(24,6))
+    decoder_input = Input(shape=(24,64))
     decoder_layer = loaded_autoencoder.layers[5](decoder_input)  # Assuming Conv1D layer is at index -3
     decoder_layer = loaded_autoencoder.layers[6](decoder_layer)  # Assuming Conv1D layer is at index -3
     decoder_layer = loaded_autoencoder.layers[7](decoder_layer)  # Assuming Conv1D layer is at index -3

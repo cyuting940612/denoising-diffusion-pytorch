@@ -4,32 +4,36 @@ import DataProcess as dp
 
 def DataProcess_Classifier():
     #Mapping ERCOT data
-    filename_lmp = 'lmp_2019.csv'
-    df_lmp_origin = pd.read_csv(filename_lmp)['LZ_HOUSTON']
-    df_lmp_1 = df_lmp_origin.to_numpy()
-    df_lmp_1 = df_lmp_1.reshape((35040,1))
-    # lmp_0 = df_lmp_new + 18
-    # lmp_log = np.log(lmp_0)
-    filename_load = 'load_2019.csv'
-    df_load_new = pd.read_csv(filename_load)['ERCOT'].div(1000)
-    df_load_origin = pd.DataFrame(np.repeat(df_load_new.values, 4, axis=0))
-    df_load_1 = df_load_origin.to_numpy()
-    filename_temperature = '2953997_29.80_-95.35_2019.csv'
-    df_temperature_raw = pd.read_csv(filename_temperature, skiprows=[0, 1])
-    df_temperature_new = df_temperature_raw['Temperature']
-    df_temperature_origin = pd.DataFrame(np.repeat(df_temperature_new.values, 2, axis=0))
-    df_temperature_1 = df_temperature_origin.to_numpy()
+    # filename_lmp = 'lmp_2019.csv'
+    # df_lmp_origin = pd.read_csv(filename_lmp)['LZ_HOUSTON']
+    # df_lmp_1 = df_lmp_origin.to_numpy()
+    # df_lmp_1 = df_lmp_1.reshape((35040,1))
+    # # lmp_0 = df_lmp_new + 18
+    # # lmp_log = np.log(lmp_0)
+    # filename_load = 'load_2019.csv'
+    # df_load_new = pd.read_csv(filename_load)['ERCOT'].div(1000)
+    # df_load_origin = pd.DataFrame(np.repeat(df_load_new.values, 4, axis=0))
+    # df_load_1 = df_load_origin.to_numpy()
+    # filename_temperature = '2953997_29.80_-95.35_2019.csv'
+    # df_temperature_raw = pd.read_csv(filename_temperature, skiprows=[0, 1])
+    # df_temperature_new = df_temperature_raw['Temperature']
+    # df_temperature_origin = pd.DataFrame(np.repeat(df_temperature_new.values, 2, axis=0))
+    # df_temperature_1 = df_temperature_origin.to_numpy()
 
-    df_label_1 = np.ones((35040,1))
-    stacked_1 = np.concatenate((df_lmp_1, df_load_1, df_temperature_1,df_label_1), axis=1)
+    stacked_1,_,_ = dp.data_process()
 
-    cp_ER = stacked_1[14492:26204,:]
-    non_cp_ER_1 = stacked_1[0:14491,:]
-    non_cp_ER_2 = stacked_1[26203:35040,:]
-    non_cp_ER = np.concatenate((non_cp_ER_1,non_cp_ER_2), axis=0)
-    non_cp_ER[:,3] = -1
-    ER_classifier = np.concatenate((cp_ER,non_cp_ER), axis=0)
+    df_label_1 = -np.ones((365,1,96))
+    # stacked_1 = np.concatenate((df_lmp_1, df_load_1, df_temperature_1,df_label_1), axis=1)
 
+    # cp_ER = stacked_1[14492:26204,:]
+    # non_cp_ER_1 = stacked_1[0:14491,:]
+    # non_cp_ER_2 = stacked_1[26203:35040,:]
+    # non_cp_ER = np.concatenate((non_cp_ER_1,non_cp_ER_2), axis=0)
+    # non_cp_ER[:,3] = -1
+    # ER_classifier = np.concatenate((cp_ER,non_cp_ER), axis=0)
+
+    stacked_1 = np.concatenate((stacked_1,df_label_1),axis=1)
+    stacked_1[151:273,3,:] = 1
     # #Mapping CAISO data
     # df_temp = pd.read_csv('CAISO_temperature_2019.csv')
     # np_temp = df_temp.values
@@ -54,4 +58,5 @@ def DataProcess_Classifier():
     #
     # repeated_data = np.repeat(stacked, 4, axis=0)
     # classifier_data = np.concatenate((repeated_data,stacked_1),axis=0)
-    return ER_classifier,cp_ER,non_cp_ER
+    # return ER_classifier,cp_ER,non_cp_ER
+    return stacked_1
