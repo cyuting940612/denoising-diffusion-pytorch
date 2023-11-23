@@ -595,7 +595,7 @@ class GaussianDiffusion1D(nn.Module):
         model_mean, _, model_log_variance, x_start = self.p_mean_variance(x = x, t = batched_times, x_self_cond = x_self_cond, clip_denoised = clip_denoised)
         noise = torch.randn_like(x) if t > 0 else 0. # no noise if t == 0
         pred_img = model_mean + (0.5 * model_log_variance).exp() * noise
-        return pred_img, x_start
+        return pred_img, x_start,model_mean
 
     @torch.no_grad()
     def p_sample_loop(self, shape, cond):
@@ -607,10 +607,10 @@ class GaussianDiffusion1D(nn.Module):
 
         for t in tqdm(reversed(range(0, self.num_timesteps)), desc = 'sampling loop time step', total = self.num_timesteps):
             self_cond = x_start if self.self_condition else None
-            img, x_start = self.p_sample(img, t, self_cond)
+            img, x_start,mean = self.p_sample(img, t, self_cond)
 
         img = self.unnormalize(img)
-        return img
+        return img,mean
 
     @torch.no_grad()
     def ddim_sample(self, shape, clip_denoised = True):

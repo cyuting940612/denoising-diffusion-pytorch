@@ -9,6 +9,7 @@ import Encoder
 from torch import nn
 from scipy.optimize import minimize
 import DataProcess_user as dpu
+import pandas as pd
 
 if torch.cuda.is_available():
     torch.device('cuda')
@@ -39,7 +40,8 @@ data_0,min_values,max_values = dpu.data_process()
 # data = data_1_cp.reshape(data_1_cp.shape[0],1,50)
 
 data_0_nocp = np.concatenate((data_0[0:151],data_0[273:366]),axis=0)
-data_1_nocp= np.transpose(data_0_nocp, (0, 2, 1))
+data_0_cp = data_0[151:273]
+data_1_nocp= np.transpose(data_0_cp, (0, 2, 1))
 data_2_nocp = Encoder.encoder(data_1_nocp)
 data = np.transpose(data_2_nocp, (0, 2, 1))
 
@@ -85,8 +87,8 @@ for k in range(synthetic_n):
     num_samples = 1
     cond_tensor = torch.zeros(1, 64, 24)
     condition = torch.tensor(data[0,:,:])
-    condition1 = data[200,:,:]
-    condition2 = data[0,:,:]
+    # condition1 = data[200,:,:]
+    # condition2 = data[0,:,:]
     cond_tensor[0,:,:] = condition
 
     for name, param in model_cls.named_parameters():
@@ -98,8 +100,15 @@ for k in range(synthetic_n):
 
 
     cond2 = cond2.reshape(1,64,24)
-    generated_samples_origin = diffusion.sample(batch_size=num_samples, cond=cond2)
-    # generated_samples_origin = diffusion.condition_sample(batch_size=num_samples, cond=cond2)
+    generated_samples_origin,final_mean = diffusion.sample(batch_size=num_samples, cond=cond2)
+
+
+    mean = final_mean.numpy()
+    df = pd.DataFrame(mean[0,:,:])
+    excel_filename = '4CP_mean.xlsx'
+    df.to_excel(excel_filename, index=False)
+
+
     generated_samples_np = generated_samples_origin.numpy()
     generated_samples_np_re = np.transpose(generated_samples_np, (0, 2, 1))
     generated_samples_2d = Encoder.decoder(generated_samples_np_re)
