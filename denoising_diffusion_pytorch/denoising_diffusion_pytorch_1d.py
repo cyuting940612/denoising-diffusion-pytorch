@@ -595,25 +595,24 @@ class GaussianDiffusion1D(nn.Module):
         model_mean, _, model_log_variance, x_start = self.p_mean_variance(x = x, t = batched_times, x_self_cond = x_self_cond, clip_denoised = clip_denoised)
         noise = torch.randn_like(x) if t > 0 else 0. # no noise if t == 0
         pred_img = model_mean + (0.5 * model_log_variance).exp() * noise
-        return pred_img, x_start,model_mean
+        return pred_img, x_start
 
     @torch.no_grad()
-    def p_sample_loop(self, shape, cond):
+    def p_sample_loop(self, shape):
         batch, device = shape[0], self.betas.device
-        # img = cond
         img = torch.randn(shape, device=device)
 
-        x_start = cond
+        x_start = None
 
         for t in tqdm(reversed(range(0, self.num_timesteps)), desc = 'sampling loop time step', total = self.num_timesteps):
             self_cond = x_start if self.self_condition else None
-            img, x_start,mean = self.p_sample(img, t, self_cond)
+            img, x_start = self.p_sample(img, t, self_cond)
 
         img = self.unnormalize(img)
-        return img,mean
+        return img
 
     @torch.no_grad()
-    def ddim_sample(self, shape, clip_denoised = True):
+    def ddim_sample(self, shape, cond = None, clip_denoised = True):
         batch, device, total_timesteps, sampling_timesteps, eta, objective = shape[0], self.betas.device, self.num_timesteps, self.sampling_timesteps, self.ddim_sampling_eta, self.objective
 
         times = torch.linspace(-1, total_timesteps - 1, steps=sampling_timesteps + 1)   # [-1, 0, 1, 2, ..., T-1] when sampling_timesteps == total_timesteps
@@ -622,7 +621,7 @@ class GaussianDiffusion1D(nn.Module):
 
         img = torch.randn(shape, device = device)
 
-        x_start = None
+        x_start = cond
 
         for time, time_next in tqdm(time_pairs, desc = 'sampling loop time step'):
             time_cond = torch.full((batch,), time, device=device, dtype=torch.long)
@@ -649,10 +648,13 @@ class GaussianDiffusion1D(nn.Module):
         return img
 
     @torch.no_grad()
-    def sample(self, batch_size = 16,cond=None):
+    def sample(self, batch_size = 16):
         seq_length, channels = self.seq_length, self.channels
         sample_fn = self.p_sample_loop if not self.is_ddim_sampling else self.ddim_sample
-        return sample_fn((batch_size, channels, seq_length),cond=cond)
+        return sample_fn((batch_size, channels, seq_length))
+
+    def sample_inter(self,cond1=None,cond2=None):
+        return self.interpolate(x1=cond1, x2=cond2)
 
     @torch.no_grad()
     def interpolate(self, x1, x2, t = None, lam = 0.5):

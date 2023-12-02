@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import DataProcess as dp
+import DataProcess_user as dpu
 
 def DataProcess_Classifier():
     #Mapping ERCOT data
@@ -20,7 +21,7 @@ def DataProcess_Classifier():
     # df_temperature_origin = pd.DataFrame(np.repeat(df_temperature_new.values, 2, axis=0))
     # df_temperature_1 = df_temperature_origin.to_numpy()
 
-    stacked_1,_,_ = dp.data_process()
+    stacked_1,_,_ = dpu.data_process()
 
     df_label_1 = -np.ones((365,1,96))
     # stacked_1 = np.concatenate((df_lmp_1, df_load_1, df_temperature_1,df_label_1), axis=1)
@@ -33,7 +34,7 @@ def DataProcess_Classifier():
     # ER_classifier = np.concatenate((cp_ER,non_cp_ER), axis=0)
 
     stacked_1 = np.concatenate((stacked_1,df_label_1),axis=1)
-    stacked_1[151:273,3,:] = 1
+    stacked_1[151:273,100,:] = 1
     # #Mapping CAISO data
     # df_temp = pd.read_csv('CAISO_temperature_2019.csv')
     # np_temp = df_temp.values

@@ -61,10 +61,10 @@ from tensorflow import keras
 class SimpleClassifier(nn.Module):
     def __init__(self):
         super(SimpleClassifier, self).__init__()
-        self.fc1 = nn.Linear(24*16, 1)
+        self.fc1 = nn.Linear(24*64, 1)
 
     def forward(self, x):
-        x = x.contiguous().view (-1,24*16)
+        x = x.contiguous().view (-1,24*64)
         x = self.fc1(x)
         x = nn.functional.relu(x)
         return x

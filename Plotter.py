@@ -4,23 +4,23 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
 
-filename_lmp = 'lmp_2019.csv'
-df_lmp_origin = pd.read_csv(filename_lmp)['LZ_HOUSTON']
-df_lmp = df_lmp_origin.to_numpy()
-lmp_0 = df_lmp + 18
-lmp_log = np.log(lmp_0)
-filename_load = 'load_2019.csv'
-df_load_0 = pd.read_csv(filename_load)['ERCOT'].div(1000)
-df_load_origin = pd.DataFrame(np.repeat(df_load_0.values, 4, axis=0))
-df_load = df_load_origin.to_numpy()
-filename_temperature = '2953997_29.80_-95.35_2019.csv'
+# filename_lmp = 'lmp_2019.csv'
+# df_lmp_origin = pd.read_csv(filename_lmp)['LZ_HOUSTON']
+# df_lmp = df_lmp_origin.to_numpy()
+# lmp_0 = df_lmp + 18
+# lmp_log = np.log(lmp_0)
+# filename_load = 'load_2019.csv'
+# df_load_0 = pd.read_csv(filename_load)['ERCOT'].div(1000)
+# df_load_origin = pd.DataFrame(np.repeat(df_load_0.values, 4, axis=0))
+# df_load = df_load_origin.to_numpy()
+# filename_temperature = '2953997_29.80_-95.35_2019.csv'
+#
+# df_temperature_raw = pd.read_csv(filename_temperature, skiprows=[0, 1])
+# df_temperature_0 = df_temperature_raw['Temperature']
+# df_temperature_origin = pd.DataFrame(np.repeat(df_temperature_0.values, 2, axis=0))
+# df_temperature = df_temperature_origin.to_numpy()
 
-df_temperature_raw = pd.read_csv(filename_temperature, skiprows=[0, 1])
-df_temperature_0 = df_temperature_raw['Temperature']
-df_temperature_origin = pd.DataFrame(np.repeat(df_temperature_0.values, 2, axis=0))
-df_temperature = df_temperature_origin.to_numpy()
-
-filename_syn = 'Manipulated_Sample.csv'
+filename_syn = 'Unconditional_Whole_2.csv'
 lmp = pd.read_csv(filename_syn)['LMP'].to_numpy()
 load = pd.read_csv(filename_syn)['Load'].to_numpy()
 temp = pd.read_csv(filename_syn)['Temperature'].to_numpy()
