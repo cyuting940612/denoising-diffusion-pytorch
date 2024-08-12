@@ -9,9 +9,13 @@ import tensorflow as tf
 from tensorflow import keras
 import Classifier
 import Encoder
-import DataProcess_user as dpu
+import DataProfess_Classifier_High_Low as dpchl
 
-df_all = dpc.DataProcess_Classifier()
+for i in reversed(10):
+    print(str(i))
+
+df_all = dpc.data_process()
+# df_all = dpchl.data_process()
 
 # X = np.zeros((365,3,96))
 # y = np.zeros((365))
@@ -21,38 +25,47 @@ df_all = dpc.DataProcess_Classifier()
 #         X[i, 1, j] = df_all[i * 96 + j,1]
 #         X[i, 2, j] = df_all[i * 96 + j,2]
 #         y[i] = df_all[i*96,3]
-X = df_all[:,0:100,:]
-y = df_all[:,100,0]
+X = df_all[:,0:1,:]
+y = df_all[:,1,0]
+
+# X = df_all[:,0:96]
+# y = df_all[:,96]
+
 # X = np.random.randn(100, 3, 96)  # 100 data points with 3 channels and 96 time steps
 # y = np.random.randint(0, 2, 100)  # Binary classification (0 or 1)
-X = np.transpose(X,(0,2,1))
-X = Encoder.encoder(X)
-X = np.transpose(X,(0,2,1))
+# X = np.transpose(X,(0,2,1))
+# X = Encoder.encoder(X)
+# X = np.transpose(X,(0,2,1))
 
+reshaped_arr = X.reshape(36500, 96)
 # Convert data to PyTorch tensors
-X_tensor = torch.tensor(X, dtype=torch.float32)
+X_tensor = torch.tensor(reshaped_arr, dtype=torch.float32)
 y_tensor = torch.tensor(y, dtype=torch.float32)
 dataset = TensorDataset(X_tensor, y_tensor)
 dataloader = DataLoader(dataset, batch_size=16, shuffle=True)
 
 # Initialize the model, loss function, and optimizer
-model = Classifier.SimpleClassifier()
+model = Classifier.SimpleNN()
 criterion = nn.BCEWithLogitsLoss()  # Binary Cross Entropy loss for binary classification
-optimizer = optim.Adam(model.parameters(), lr=0.00001)
+optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
 # Training loop
-epochs = 1000
+epochs = 500
 for epoch in range(epochs):
     running_loss = 0.0
     for inputs, labels in dataloader:
-        optimizer.zero_grad()
-        outputs = model(inputs)
+        outputs,_ = model(inputs)
         loss = criterion(outputs, labels.view(-1, 1))
+
+        optimizer.zero_grad()
         loss.backward()
         optimizer.step()
         running_loss += loss.item()
 
     print(f"Epoch {epoch + 1}, Loss: {running_loss / len(dataloader)}")
 # Save the trained model
-torch.save(model.state_dict(), '2d_classifier_model.pth')
+torch.save(model.state_dict(), '2d_classifier_model_week_weekend.pth')
+
 print("Finished Training")
+
+

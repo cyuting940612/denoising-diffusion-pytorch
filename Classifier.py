@@ -7,6 +7,7 @@ import pandas as pd
 import DataProcess_Classifier as dpc
 import tensorflow as tf
 from tensorflow import keras
+import torch.nn.functional as F
 
 
 # filename_lmp = 'Classifier.csv'
@@ -58,16 +59,33 @@ from tensorflow import keras
 # test_loss, test_accuracy = model.evaluate(X_test, y_test)
 # print(f"Test accuracy: {test_accuracy}")
 # Define a simple 2D classifier model
-class SimpleClassifier(nn.Module):
+class SimpleNN(nn.Module):
     def __init__(self):
-        super(SimpleClassifier, self).__init__()
-        self.fc1 = nn.Linear(24*64, 1)
+        super(SimpleNN, self).__init__()
+        self.fc1 = nn.Linear(96, 128)  # First layer
+        self.fc2 = nn.Linear(128, 32)  # Second layer
+        self.fc3 = nn.Linear(32, 1)    # Output layer for 2 classes
 
     def forward(self, x):
-        x = x.contiguous().view (-1,24*64)
-        x = self.fc1(x)
-        x = nn.functional.relu(x)
-        return x
+        x = F.relu(self.fc1(x))
+        fc2_output = F.relu(self.fc2(x))
+        x = self.fc3(fc2_output)
+        return x, fc2_output
+
+class MetaClassifier(nn.Module):
+    def __init__(self):
+        super(MetaClassifier, self).__init__()
+        self.flatten = nn.Flatten()
+        self.fc1 = nn.Linear(32*2, 128)  # 64*2 is the flattened size of the input
+        self.fc2 = nn.Linear(128, 32)
+        self.fc3 = nn.Linear(32, 4)  # Output layer for 4 categories
+
+    def forward(self, x):
+        x = self.flatten(x)
+        x = F.relu(self.fc1(x))
+        fc2_output = F.relu(self.fc2(x))
+        x = self.fc3(fc2_output)
+        return x, fc2_output
 
 
 # Create a DataLoader for the data
@@ -126,3 +144,53 @@ class SimpleClassifier(nn.Module):
 #     predicted = model(test_inputs)
 #     probability = torch.sigmoid(predicted)
 #     print(f"Predicted Probability: {probability.item()}")
+
+
+class Model(nn.model):
+    def __init__(self):
+        self.first_layer = nn.Conv2d(16,64,kernel=(3,3),padding = 2)
+        self.flatten =nn.Flatten()
+        self.fc = nn.Linear(16,24)
+        self.relu = nn.ReLu()
+        self.lstm = nn.LSTM(14,64)
+
+
+    def forward(self,x):
+        x = self.first_layer(x)
+        x = self.relu(x)
+        x = self.fc(x)
+        x,hidden_cell = self.lstm(x,hidden_cell)
+
+
+pd.merge(df1,df2)
+
+pd.concat(df1,df2,axis = 0)
+
+X_train = np.random(100)
+Y_train = np.random(1)
+dataloader = DataLoader(X_train,Y_train, shffule = ture, batch_size=16)
+model = Model()
+criterion = nn.CrossEntropyLoss()
+optimizer = Adam.optim(lr = 0.001)
+
+torch.tensor([2]).numpy()
+
+for epoch in range(max_epoch):
+    r_loss =0
+    for input,labels in dataloader:
+        output = model(input)
+        loss = criterion(output,labels.view(-1,1) )
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        r_loss+= loss.item()
+
+model.eval()
+
+with torch.no_grad():
+    prediction = model(x_test)
+
+
+
+
+

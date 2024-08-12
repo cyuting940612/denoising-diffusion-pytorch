@@ -33,6 +33,9 @@ ModelPrediction =  namedtuple('ModelPrediction', ['pred_noise', 'pred_x_start'])
 
 # helpers functions
 
+# Define a custom dataset class
+
+
 def exists(x):
     return x is not None
 
@@ -191,13 +194,17 @@ class ResnetBlock(nn.Module):
         self.block2 = Block(dim_out, dim_out, groups = groups)
         self.res_conv = nn.Conv1d(dim, dim_out, 1) if dim != dim_out else nn.Identity()
 
-    def forward(self, x, time_emb = None):
+    def forward(self, x, time_emb = None, label_emb = None):
 
         scale_shift = None
         if exists(self.mlp) and exists(time_emb):
             time_emb = self.mlp(time_emb)
             time_emb = rearrange(time_emb, 'b c -> b c 1')
-            scale_shift = time_emb.chunk(2, dim = 1)
+            label_emb = label_emb.to(torch.float32)
+            label_emb = self.mlp(label_emb)
+            label_emb = rearrange(label_emb, 'b c -> b c 1')
+            emb_out = time_emb+label_emb
+            scale_shift = emb_out.chunk(2, dim = 1)
 
         # x = torch.nn.functional.pad(x, (1,1), "replicate",value=0)
         h = self.block1(x, scale_shift = scale_shift)
@@ -272,7 +279,7 @@ class Unet1D(nn.Module):
         dim_mults=(1, 2, 4, 8),
         channels = 3,
         self_condition = False,
-        resnet_block_groups = 4,
+        resnet_block_groups = 1,
         learned_variance = False,
         learned_sinusoidal_cond = False,
         random_fourier_features = False,
@@ -354,7 +361,7 @@ class Unet1D(nn.Module):
         self.final_res_block = block_klass(dim * 2, dim, time_emb_dim = time_dim)
         self.final_conv = nn.Conv1d(dim, self.out_dim, 1)
 
-    def forward(self, x, time, x_self_cond = None):
+    def forward(self, x, time, label, x_self_cond = None):
         if self.self_condition:
             x_self_cond = default(x_self_cond, lambda: torch.zeros_like(x))
             x = torch.cat((x_self_cond, x), dim = 1)
@@ -365,12 +372,15 @@ class Unet1D(nn.Module):
 
         t = self.time_mlp(time)
 
+        label = label.to(torch.float32)
+        y = torch.repeat_interleave(label.unsqueeze(1), repeats=16, dim=1)
+
         h = []
         for block1, block2, attn, downsample in self.downs:
-            x = block1(x, t)
+            x = block1(x, t, y)
             h.append(x)
 
-            x = block2(x, t)
+            x = block2(x, t, y)
             x = attn(x)
             h.append(x)
 
@@ -378,17 +388,17 @@ class Unet1D(nn.Module):
             x = downsample(x)
 
         x = torch.nn.functional.pad(x, (1,1), "replicate",value=0)
-        x = self.mid_block1(x, t)
+        x = self.mid_block1(x, t, y)
         x = self.mid_attn(x)
-        x = self.mid_block2(x, t)
+        x = self.mid_block2(x, t, y)
 
         for block1, block2, attn, upsample in self.ups:
             x = torch.cat((x, h.pop()), dim = 1)
-            x = block1(x, t)
+            x = block1(x, t, y)
 
             x = torch.cat((x, h.pop()), dim = 1)
             # x = torch.nn.functional.pad(x, (1, 1), "replicate", value=0)
-            x = block2(x, t)
+            x = block2(x, t, y)
             x = attn(x)
 
             x = torch.nn.functional.pad(x, (1, 1), "replicate", value=0)
@@ -396,7 +406,7 @@ class Unet1D(nn.Module):
 
         x = torch.cat((x, r), dim = 1)
 
-        x = self.final_res_block(x, t)
+        x = self.final_res_block(x, t, y)
         x = self.final_conv(x)
         return x
 
@@ -434,7 +444,7 @@ class GaussianDiffusion1D(nn.Module):
         timesteps = 1000,
         sampling_timesteps = None,
         objective = 'pred_x0',
-        beta_schedule = 'cosine',
+        beta_schedule = 'linear',
         ddim_sampling_eta = 0.,
         auto_normalize = True
     ):
@@ -552,8 +562,13 @@ class GaussianDiffusion1D(nn.Module):
         posterior_log_variance_clipped = extract(self.posterior_log_variance_clipped, t, x_t.shape)
         return posterior_mean, posterior_variance, posterior_log_variance_clipped
 
-    def model_predictions(self, x, t, x_self_cond = None, clip_x_start = False, rederive_pred_noise = False):
-        model_output = self.model(x, t, x_self_cond)
+    def model_predictions(self, x, t, label, x_self_cond = None, clip_x_start = False, rederive_pred_noise = False):
+        s=1
+        non_condition_label = torch.tensor([0])
+        model_output_1 = self.model(x, t, label, x_self_cond)
+        model_output_2 = self.model(x, t, non_condition_label, x_self_cond)
+        model_output = model_output_2+s*(model_output_1-model_output_2)
+        # model_output = model_output_1
         maybe_clip = partial(torch.clamp, min = -1., max = 1.) if clip_x_start else identity
 
         if self.objective == 'pred_noise':
@@ -577,8 +592,8 @@ class GaussianDiffusion1D(nn.Module):
 
         return ModelPrediction(pred_noise, x_start)
 
-    def p_mean_variance(self, x, t, x_self_cond = None, clip_denoised = True):
-        preds = self.model_predictions(x, t, x_self_cond)
+    def p_mean_variance(self, x, t, label, x_self_cond = None, clip_denoised = False):
+        preds = self.model_predictions(x, t, label, x_self_cond)
         x_start = preds.pred_x_start
         # x_start = x_self_cond
 
@@ -589,26 +604,29 @@ class GaussianDiffusion1D(nn.Module):
         return model_mean, posterior_variance, posterior_log_variance, x_start
 
     @torch.no_grad()
-    def p_sample(self, x, t: int, x_self_cond = None, clip_denoised = True):
+    def p_sample(self, x, t: int, label: int, x_self_cond = None, clip_denoised = False):
         b, *_, device = *x.shape, x.device
         batched_times = torch.full((b,), t, device = x.device, dtype = torch.long)
-        model_mean, _, model_log_variance, x_start = self.p_mean_variance(x = x, t = batched_times, x_self_cond = x_self_cond, clip_denoised = clip_denoised)
+        batched_labels = torch.full((b,), label, device = x.device, dtype = torch.long)
+        model_mean, _, model_log_variance, x_start = self.p_mean_variance(x = x, t = batched_times, label = batched_labels,  x_self_cond = x_self_cond, clip_denoised = clip_denoised)
         noise = torch.randn_like(x) if t > 0 else 0. # no noise if t == 0
         pred_img = model_mean + (0.5 * model_log_variance).exp() * noise
         return pred_img, x_start
 
     @torch.no_grad()
-    def p_sample_loop(self, shape):
+    # def p_sample_loop(self, shape, cond):
+    def p_sample_loop(self, shape, label):
         batch, device = shape[0], self.betas.device
+        # img = cond
         img = torch.randn(shape, device=device)
 
         x_start = None
 
         for t in tqdm(reversed(range(0, self.num_timesteps)), desc = 'sampling loop time step', total = self.num_timesteps):
             self_cond = x_start if self.self_condition else None
-            img, x_start = self.p_sample(img, t, self_cond)
+            img, x_start = self.p_sample(img, t, label, self_cond)
 
-        img = self.unnormalize(img)
+        # img = self.unnormalize(img)
         return img
 
     @torch.no_grad()
@@ -648,10 +666,12 @@ class GaussianDiffusion1D(nn.Module):
         return img
 
     @torch.no_grad()
-    def sample(self, batch_size = 16):
+    # def sample(self, batch_size = 16,cond=None):
+    def sample(self, batch_size = 16, label=None):
         seq_length, channels = self.seq_length, self.channels
         sample_fn = self.p_sample_loop if not self.is_ddim_sampling else self.ddim_sample
-        return sample_fn((batch_size, channels, seq_length))
+        # return sample_fn((batch_size, channels, seq_length),cond)
+        return sample_fn((batch_size, channels, seq_length),label)
 
     def sample_inter(self,cond1=None,cond2=None):
         return self.interpolate(x1=cond1, x2=cond2)
@@ -685,9 +705,11 @@ class GaussianDiffusion1D(nn.Module):
             extract(self.sqrt_one_minus_alphas_cumprod, t, x_start.shape) * noise
         )
 
-    def p_losses(self, x_start, t, noise = None):
+    def p_losses(self, x_start, t, label, noise = None):
         b, c, n = x_start.shape
         noise = default(noise, lambda: torch.randn_like(x_start))
+
+        # noise = torch.clamp(original_noise, min=-1, max=1)
 
         # noise sample
 
@@ -700,12 +722,12 @@ class GaussianDiffusion1D(nn.Module):
         x_self_cond = None
         if self.self_condition and random() < 0.5:
             with torch.no_grad():
-                x_self_cond = self.model_predictions(x, t).pred_x_start
+                x_self_cond = self.model_predictions(x, t, label).pred_x_start
                 x_self_cond.detach()
 
         # predict and take gradient step
 
-        model_out = self.model(x, t, x_self_cond)
+        model_out = self.model(x, t, label, x_self_cond)
 
         if self.objective == 'pred_noise':
             target = noise
@@ -723,13 +745,13 @@ class GaussianDiffusion1D(nn.Module):
         loss = loss * extract(self.loss_weight, t, loss.shape)
         return loss.mean()
 
-    def forward(self, img, *args, **kwargs):
-        b, c, n, device, seq_length, = *img.shape, img.device, self.seq_length
+    def forward(self, img, label, *args, **kwargs):
+        b, c, n, device, seq_length = *img.shape, img.device, self.seq_length
         assert n == seq_length, f'seq length must be {seq_length}'
         t = torch.randint(0, self.num_timesteps, (b,), device=device).long()
 
-        img = self.normalize(img)
-        return self.p_losses(img, t, *args, **kwargs)
+        # img = self.normalize(img)
+        return self.p_losses(img, t,label, *args, **kwargs)
 
 
 
@@ -791,7 +813,6 @@ class Trainer1D(object):
         self.dl = cycle(dl)
 
         # optimizer
-
         self.opt = Adam(diffusion_model.parameters(), lr = train_lr, betas = adam_betas)
 
         # for logging results in a folder periodically
@@ -853,38 +874,42 @@ class Trainer1D(object):
     def train(self):
         accelerator = self.accelerator
         device = accelerator.device
-        initial_sample_origin,_,_ = dp.data_process()
-        # initial_sample_single = torch.tensor(initial_sample_origin[0,:,:]).reshape(-1)
-        # initial_sample_single = initial_sample_single.reshape(1,3,96)
-        mse_arr = np.zeros((self.train_num_steps+1))
 
         with tqdm(initial = self.step, total = self.train_num_steps, disable = not accelerator.is_main_process) as pbar:
 
             while self.step < self.train_num_steps:
-
+                # if self.step >= 200:
+                #     train_lr = 8e-5
+                # if self.step >= 800:
+                #     train_lr = 8e-6
                 total_loss = 0.
 
                 for _ in range(self.gradient_accumulate_every):
-                    data = next(self.dl).to(device)
-
+                    data = next(self.dl)
+                    data_point = data[0].to(device)
+                    label = data[1].to(device)
                     with self.accelerator.autocast():
-                        loss = self.model(data)
+                        loss = self.model(data_point,label)
                         loss = loss / self.gradient_accumulate_every
                         total_loss += loss.item()
 
                     self.accelerator.backward(loss)
 
-                pbar.set_description(f'loss: {total_loss:.4f}')
+                if total_loss<=0.00000001:
+                    print(f"Stopping early at step {self.step}: total_loss={total_loss:.4f}")
+                    break
+                else:
+                    pbar.set_description(f'loss: {total_loss:.4f}')
 
-                accelerator.wait_for_everyone()
-                accelerator.clip_grad_norm_(self.model.parameters(), self.max_grad_norm)
+                    accelerator.wait_for_everyone()
+                    accelerator.clip_grad_norm_(self.model.parameters(), self.max_grad_norm)
 
-                self.opt.step()
-                self.opt.zero_grad()
+                    self.opt.step()
+                    self.opt.zero_grad()
 
-                accelerator.wait_for_everyone()
+                    accelerator.wait_for_everyone()
 
-                self.step += 1
+                    self.step += 1
                 # if accelerator.is_main_process:
                 #     self.ema.update()
                 #

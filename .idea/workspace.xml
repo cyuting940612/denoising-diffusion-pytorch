@@ -5,10 +5,109 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f7d18e9-9904-490f-a80e-6984f8f033f9" name="Changes" comment="remove train.csv to make push">
-      <change beforePath="$PROJECT_DIR$/Unconditional_Whole.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Unconditional_Whole.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Unconditional_synthetic.py" beforeDir="false" afterPath="$PROJECT_DIR$/Unconditional_synthetic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Unconditional_tranier.py" beforeDir="false" afterPath="$PROJECT_DIR$/Unconditional_tranier.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/diffusion_model_unconditional_checkpoint.pth" beforeDir="false" afterPath="$PROJECT_DIR$/diffusion_model_unconditional_checkpoint.pth" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.data/datasets/Multi30k/train.de" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.data/datasets/Multi30k/train.en" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.data/datasets/Multi30k/training.tar.gz" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.data/datasets/Multi30k/val.de" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.data/datasets/Multi30k/val.en" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.data/datasets/Multi30k/validation.tar.gz" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AE.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aggregated_classifier.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aggregated_classifier_evaluation.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aggregated_classifier_feature.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aggregated_classifier_trainier.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CNN_classifier.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Classifier_Meta_Trainer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Classifier_Meta_feature.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataGetScript.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataProcess_Transformer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataProcess_filterfree.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataProcess_user_conditional.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataProcess_user_manipulate.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataProcess_user_unconditional.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataProfess_Classifier_High_Low.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ERCOT load - 2018.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ERCOT load - 2019.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ERCOT load - 2022.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Example1Out.10757104" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FID_eval.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GAN.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GAN_sample.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Generalized_classifier.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Generalized_classifier_trainer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/IS_eval.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MyJob.slurm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Aggregate(10weekday_90weekend).svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Aggregate(90weekday_10weekend).svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Conditional_Synthetic_User(Weekday).svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Real_User_Load.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Real_User_Load_Temperature(3D).svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Real_Whole_LMP.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Real_Whole_Load.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Real_Whole_Load_Temperature(3D).svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Real_Whole_Temperature.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Synthetic_User_Load.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Synthetic_User_Load_Temperature(3D).svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Synthetic_Whole_LMP.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Synthetic_Whole_Load.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Synthetic_Whole_Load_Temperature(3D).svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/Synthetic_Whole_Temperature.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SVG_plots/convert_svg_to_pdf.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Transfomer_synthetic.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Transformer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Transformer_synthetic.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Transformer_trainer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/aggregated_classifier_daily.pth" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/aggregated_classifier_model_Combined_test_2.pth" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/aggregated_classifier_model_Combined_test_3.pth" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/aggregated_classifier_monthly.pth" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/aggregated_classifier_weekly.pth" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional_tranier.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/denoising_diffusion_pytorch/denoising_diffusion_pytorch_linear.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/generalized_classifier_model.pth" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/generalized_classifier_model_monthly.pth" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/multi30k_model_00.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/multi30k_model_01.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/multi30k_model_02.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/multi30k_model_03.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/multi30k_model_04.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/multi30k_model_05.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/multi30k_model_06.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/multi30k_model_07.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/multi30k_model_08.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/multi30k_model_09.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/multi30k_model_final.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/multi30k_model_final_large.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/multi30k_model_final_small.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/real_usage_weekday.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/real_usage_weekend.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/synthetic_usage_weekday.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/synthetic_usage_weekend.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/total_usage_weekday (10-90).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/total_usage_weekday (30-70).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/total_usage_weekday (50-50).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/total_usage_weekday (70-30).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/total_usage_weekday (90-10).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/transformer_model.pth" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/transformer_weekday.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/transformer_weekend.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/unet.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vocab.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_classifier_model.pth" beforeDir="false" afterPath="$PROJECT_DIR$/2d_classifier_model.pth" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/Classifier.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classifier_Trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Classifier_Trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Classifier_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Classifier_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataProcess_Classifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/DataProcess_Classifier.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Diffusion_Trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Diffusion_Trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Manipulate.py" beforeDir="false" afterPath="$PROJECT_DIR$/Manipulate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PCA.py" beforeDir="false" afterPath="$PROJECT_DIR$/PCA.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Plotter.py" beforeDir="false" afterPath="$PROJECT_DIR$/Plotter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Unconditional_synthetic.py" beforeDir="false" afterPath="$PROJECT_DIR$/conditional_synthetic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Unconditional_tranier.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/autoencoder_model.h5" beforeDir="false" afterPath="$PROJECT_DIR$/autoencoder_model.h5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/denoising_diffusion_pytorch/denoising_diffusion_pytorch_1d.py" beforeDir="false" afterPath="$PROJECT_DIR$/denoising_diffusion_pytorch/denoising_diffusion_pytorch_1d.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,6 +117,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="HTML File" />
         <option value="Python Script" />
       </list>
     </option>
@@ -32,18 +132,32 @@
   &quot;associatedIndex&quot;: 5
 }</component>
   <component name="ProjectId" id="2YIAxaVJOzuF094HlYW8rqavhag" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/yutingcai/PycharmProjects/denoising-diffusion-pytorch",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
-  <component name="RunManager" selected="Python.Unconditional_synthetic">
-    <configuration name="Classifier_Trainer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/denoising_diffusion_pytorch" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.Aggregated_classifier_trainier">
+    <configuration name="Aggregated_classifier_trainier" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="denoising-diffusion-pytorch" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -55,7 +169,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Classifier_Trainer.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aggregated_classifier_trainier.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -64,7 +178,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Manipulate" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="DataProcess_Transformer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="denoising-diffusion-pytorch" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -76,7 +190,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Manipulate.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/DataProcess_Transformer.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -85,7 +199,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Unconditional_synthetic" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="FID_eval" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="denoising-diffusion-pytorch" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -97,7 +211,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Unconditional_synthetic.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FID_eval.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -106,7 +220,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Unconditional_tranier" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Transformer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="denoising-diffusion-pytorch" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -118,7 +232,28 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Unconditional_tranier.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Transformer.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="conditional_synthetic" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="denoising-diffusion-pytorch" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/conditional_synthetic.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -129,10 +264,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Unconditional_synthetic" />
-        <item itemvalue="Python.Unconditional_tranier" />
-        <item itemvalue="Python.Manipulate" />
-        <item itemvalue="Python.Classifier_Trainer" />
+        <item itemvalue="Python.Aggregated_classifier_trainier" />
+        <item itemvalue="Python.FID_eval" />
+        <item itemvalue="Python.conditional_synthetic" />
+        <item itemvalue="Python.Transformer" />
+        <item itemvalue="Python.DataProcess_Transformer" />
       </list>
     </recent_temporary>
   </component>
@@ -208,6 +344,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="100 Users unconditonal" />
     <MESSAGE value="With mean data" />
     <MESSAGE value="Unconditional" />
@@ -223,51 +360,259 @@
           <option name="timeStamp" value="20" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DataProcess_Classifier.py</url>
-          <line>33</line>
-          <option name="timeStamp" value="50" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Classifier_test.py</url>
-          <line>31</line>
+          <line>44</line>
           <option name="timeStamp" value="65" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Manipulate.py</url>
-          <line>102</line>
-          <option name="timeStamp" value="86" />
+          <line>75</line>
+          <option name="timeStamp" value="138" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Manipulate.py</url>
-          <line>101</line>
-          <option name="timeStamp" value="87" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Manipulate.py</url>
-          <line>100</line>
-          <option name="timeStamp" value="88" />
+          <url>file://$PROJECT_DIR$/Diffusion_Trainer.py</url>
+          <line>59</line>
+          <option name="timeStamp" value="140" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Manipulate.py</url>
           <line>95</line>
-          <option name="timeStamp" value="91" />
+          <option name="timeStamp" value="165" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DataProcess_user_manipulate.py</url>
+          <line>115</line>
+          <option name="timeStamp" value="167" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Manipulate.py</url>
-          <line>82</line>
-          <option name="timeStamp" value="93" />
+          <line>72</line>
+          <option name="timeStamp" value="175" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/denoising_diffusion_pytorch/denoising_diffusion_pytorch_linear.py</url>
+          <line>337</line>
+          <option name="timeStamp" value="295" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/denoising_diffusion_pytorch/denoising_diffusion_pytorch_linear.py</url>
+          <line>305</line>
+          <option name="timeStamp" value="314" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/IS_eval.py</url>
+          <line>76</line>
+          <option name="timeStamp" value="354" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/IS_eval.py</url>
+          <line>75</line>
+          <option name="timeStamp" value="355" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Classifier_Trainer.py</url>
-          <line>32</line>
-          <option name="timeStamp" value="95" />
+          <line>41</line>
+          <option name="timeStamp" value="390" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Unconditional_synthetic.py</url>
-          <line>104</line>
-          <option name="timeStamp" value="96" />
+          <url>file://$PROJECT_DIR$/Classifier_test.py</url>
+          <line>40</line>
+          <option name="timeStamp" value="391" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Classifier_Meta_Trainer.py</url>
+          <line>70</line>
+          <option name="timeStamp" value="392" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Classifier_Meta_Trainer.py</url>
+          <line>83</line>
+          <option name="timeStamp" value="393" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Classifier_Meta_Trainer.py</url>
+          <line>55</line>
+          <option name="timeStamp" value="395" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Classifier_Meta_Trainer.py</url>
+          <line>62</line>
+          <option name="timeStamp" value="396" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Classifier_Meta_Trainer.py</url>
+          <line>64</line>
+          <option name="timeStamp" value="397" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Classifier_Meta_feature.py</url>
+          <line>87</line>
+          <option name="timeStamp" value="428" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Aggregated_classifier_feature.py</url>
+          <line>80</line>
+          <option name="timeStamp" value="433" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Aggregated_classifier_feature.py</url>
+          <line>79</line>
+          <option name="timeStamp" value="434" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/denoising_diffusion_pytorch/denoising_diffusion_pytorch_1d.py</url>
+          <line>742</line>
+          <option name="timeStamp" value="489" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/AE.py</url>
+          <line>92</line>
+          <option name="timeStamp" value="496" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/conditional_tranier.py</url>
+          <line>111</line>
+          <option name="timeStamp" value="499" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/conditional_synthetic.py</url>
+          <line>157</line>
+          <option name="timeStamp" value="500" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/conditional_synthetic.py</url>
+          <line>118</line>
+          <option name="timeStamp" value="501" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/conditional_synthetic.py</url>
+          <line>155</line>
+          <option name="timeStamp" value="502" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/AE.py</url>
+          <line>82</line>
+          <option name="timeStamp" value="503" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Aggregated_classifier_evaluation.py</url>
+          <line>63</line>
+          <option name="timeStamp" value="511" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/CNN_classifier.py</url>
+          <line>75</line>
+          <option name="timeStamp" value="518" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/denoising_diffusion_pytorch/denoising_diffusion_pytorch_1d.py</url>
+          <line>378</line>
+          <option name="timeStamp" value="571" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Plotter.py</url>
+          <line>135</line>
+          <option name="timeStamp" value="572" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Plotter.py</url>
+          <line>178</line>
+          <option name="timeStamp" value="574" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Plotter.py</url>
+          <line>163</line>
+          <option name="timeStamp" value="575" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Plotter.py</url>
+          <line>228</line>
+          <option name="timeStamp" value="581" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Plotter.py</url>
+          <line>222</line>
+          <option name="timeStamp" value="583" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Transfomer_synthetic.py</url>
+          <line>97</line>
+          <option name="timeStamp" value="690" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Aggregated_classifier_trainier.py</url>
+          <line>236</line>
+          <option name="timeStamp" value="768" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Transformer_trainer.py</url>
+          <line>70</line>
+          <option name="timeStamp" value="779" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Transformer_trainer.py</url>
+          <line>94</line>
+          <option name="timeStamp" value="780" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Transformer.py</url>
+          <line>964</line>
+          <option name="timeStamp" value="787" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Transformer.py</url>
+          <line>1063</line>
+          <option name="timeStamp" value="790" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Transformer.py</url>
+          <line>659</line>
+          <option name="timeStamp" value="796" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Transformer.py</url>
+          <line>648</line>
+          <option name="timeStamp" value="797" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Transformer.py</url>
+          <line>269</line>
+          <option name="timeStamp" value="798" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Transformer.py</url>
+          <line>280</line>
+          <option name="timeStamp" value="799" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/FID_eval.py</url>
+          <line>746</line>
+          <option name="timeStamp" value="813" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Aggregated_classifier_trainier.py</url>
+          <line>70</line>
+          <option name="timeStamp" value="816" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DataProcess_Classifier.py</url>
+          <line>192</line>
+          <option name="timeStamp" value="817" />
         </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="target" />
+        <watch expression="model_out" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
